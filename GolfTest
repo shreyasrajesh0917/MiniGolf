@@ -1,0 +1,105 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class MiniGolfGame extends JFrame {
+
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
+    private static final int BALL_RADIUS = 10;
+
+    private int ballX;
+    private int ballY;
+    private int power;
+    private int directionX;
+    private int directionY;
+
+    public MiniGolfGame() {
+        setTitle("Mini Golf Game");
+        setSize(WIDTH, HEIGHT);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
+
+        ballX = WIDTH / 2;
+        ballY = HEIGHT / 2;
+        power = 0;
+        directionX = 0;
+        directionY = 0;
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                calculatePowerAndDirection(e.getX(), e.getY());
+            }
+        });
+
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                calculatePowerAndDirection(e.getX(), e.getY());
+            }
+        });
+    }
+
+    private void calculatePowerAndDirection(int mouseX, int mouseY) {
+        int dx = mouseX - ballX;
+        int dy = mouseY - ballY;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0) {
+            power = Math.min((int) (distance / 5), 100);
+            directionX = (int) (dx / distance);
+            directionY = (int) (dy / distance);
+        }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+
+        // Draw the ball
+        g.setColor(Color.RED);
+        g.fillOval(ballX - BALL_RADIUS, ballY - BALL_RADIUS, BALL_RADIUS * 2, BALL_RADIUS * 2);
+
+        // Draw the obstacles for each hole
+        // Customize this part to create your own levels
+        g.setColor(Color.BLACK);
+        g.fillRect(200, 200, 20, 200);
+        g.fillRect(400, 100, 100, 20);
+        g.fillRect(600, 400, 150, 20);
+        // Add more obstacles as per your requirements
+
+        // Draw the power bar
+        g.setColor(Color.GREEN);
+        g.fillRect(ballX - 10, ballY + BALL_RADIUS + 10, power, 10);
+    }
+
+    public void update() {
+        // Update the ball's position based on power and direction
+        ballX += power * directionX / 50;
+        ballY += power * directionY / 50;
+
+        // Check for collisions with obstacles or holes
+        // Add collision detection logic here
+
+        // Repaint the screen
+        repaint();
+    }
+
+    public static void main(String[] args) {
+        MiniGolfGame game = new MiniGolfGame();
+        game.setVisible(true);
+
+        // Game loop
+        while (true) {
+            game.update();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

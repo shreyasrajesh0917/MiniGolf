@@ -1,0 +1,19 @@
+
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D; 
+import javax.swing.JPanel;
+
+public class MyPanel extends JPanel{
+    MyPanel() {
+        this.setPreferredSize(new Dimension(750,750));
+    }
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setPaint(Color.pink);
+        g2d.setStroke(new BasicStroke(5));
+        g2d.drawLine(0,0,750,750);
+
+    }
+}
